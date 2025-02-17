@@ -1,0 +1,10 @@
+{% extends "layout.html" %}
+
+{% block content %}
+<div>
+    <h3>ERROR</h3>
+    以下の原因でエラーが発生しています．<br>
+    <p>{{Message}}</p>
+</div>
+<p><a href="{{url_for('home')}}">BACK TO HOME</a></p>
+{% endblock %}

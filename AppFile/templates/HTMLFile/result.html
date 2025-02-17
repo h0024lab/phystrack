@@ -1,0 +1,87 @@
+{% extends "layout.html" %}
+
+{% block content %}
+<script src='https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML'></script>
+<script>
+    const xt = "{{Path.xt}}";
+    const vxt = "{{Path.vxt}}";
+    const axt = "{{Path.axt}}";
+    const yt = "{{Path.yt}}";
+    const vyt = "{{Path.vyt}}";
+    const ayt = "{{Path.ayt}}";
+</script>
+<script>
+    const PathArr = [xt, vxt, axt, yt, vyt, ayt];
+    var newWidth, newHeight;
+    var aspectRatio;
+    
+    window.onload = function(){
+        const windowWidth = window.innerWidth;
+
+        // グラフ
+        const canvases = document.querySelectorAll('canvas');
+        canvases.forEach((canvas, index) => {
+            const ctx = canvas.getContext('2d');
+            const img = new Image();
+            img.src = PathArr[index];
+            img.onload = function(){
+                aspectRatio = parseFloat(img.height) / img.width;
+                
+                if (windowWidth <= 768){
+                    //スマホ用
+                    newWidth = parseInt(windowWidth * 0.95);
+                }else{
+                    //PC・タブレット用
+                    newWidth = parseInt(windowWidth * 0.3);
+                }
+                newHeight = parseInt(newWidth*aspectRatio);
+
+                canvas.width = newWidth;
+                canvas.height = newHeight;
+                ctx.drawImage(img, 0, 0, newWidth, newHeight);
+            }
+        });
+        
+        // 動画
+        const video = document.getElementById("video");
+        aspectRatio = parseFloat(video.videoHeight) / video.videoWidth;
+        newWidth = windowWidth * 0.95;
+        newHeight = parseInt(newWidth*aspectRatio);
+        video.width = newWidth;
+        video.height = newHeight;
+    }
+</script>
+<div class="container mt-4">
+    <h2>結果発表ー！</h2>
+        <!--x方向の結果表示-->
+        <p>
+            {{Formula.MSEX}}<br>
+            {{Formula.xt}}<br>
+            {{Formula.vxt}}<br>
+            {{Formula.axt}}<br>
+
+            <canvas id="canvas"></canvas>
+            <canvas id="canvas"></canvas>
+            <canvas id="canvas"></canvas>
+        </p>
+        <!--y方向の結果表示-->
+        <p> 
+            {{Formula.MSEY}}<br>
+            {{Formula.yt}}<br>
+            {{Formula.vyt}}<br>
+            {{Formula.ayt}}<br>
+
+            <canvas id="canvas"></canvas>
+            <canvas id="canvas"></canvas>
+            <canvas id="canvas"></canvas>
+        </p>
+        <!--CSV・MP4のダウンロード-->
+        <p>
+            位置データ（CSV）: <a href="/static/graphs/{{CSV}}" download="PositionData.csv">Download</a><br>
+            追跡中の動画（MP4）: <a href="/static/graphs/{{VPath}}" download="TrackingVideo.mp4">Download</a>
+        </p>
+        <br>
+        <p><a href="{{url_for('changeMethod')}}">CHANGE METHODS</a></p>
+        <p><a href="{{url_for('home')}}">BACK TO HOME</a></p>
+</div>
+{% endblock %}

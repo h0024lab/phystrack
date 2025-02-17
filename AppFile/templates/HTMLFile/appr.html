@@ -1,0 +1,77 @@
+{% extends "layout.html" %}
+
+{% block content %}
+<script src='https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML'></script>
+<script type="text/javascript" 
+    src="{{ url_for('static', filename='javascript/showForms.js') }}">
+</script>
+<script>
+    const XSP = "{{Path.XSP}}";
+    const YSP = "{{Path.YSP}}";
+    const PathArr = [XSP, YSP];
+    var newWidth, newHeight;
+    var aspectRatio;
+    window.onload = function(){
+
+        const canvases = document.querySelectorAll('canvas');
+        canvases.forEach((canvas, index) => {
+            const ctx = canvas.getContext('2d');
+            const img = new Image();
+            img.src = PathArr[index];
+            img.onload = function(){
+                aspectRatio = parseFloat(img.height) / img.width;
+                
+                if (window.innerWidth <= 768){
+                    newWidth = parseInt(window.innerWidth*0.95);
+                }else{
+                    newWidth = parseInt(window.innerWidth*0.4);
+                }
+                newHeight = parseInt(newWidth*aspectRatio);
+
+                canvas.width = newWidth;
+                canvas.height = newHeight;
+                ctx.drawImage(img, 0, 0, newWidth, newHeight);
+            }
+        });
+    }
+
+</script>
+
+<div class="container mt-4">
+    <h2>近似曲線の形式を選択</h2>
+
+    <canvas id="canvas"></canvas>
+    <canvas id="canvas"></canvas><br>
+    <form action="/result" method="POST" enctype="multipart/form-data">
+        <br>
+        近似形式を選択しsubmitボタンを押してください
+        <br>
+        <p>X: 
+        <select name = x_appr_method id="selectX" onchange="showFormX()">
+            <option value="CF">定数関数</option>
+            <option value="LF">1次関数</option>
+            <option value="QF">2次関数</option>
+            <option value="CosF">cos関数</option>
+            <option value="SinF">sin関数</option>
+            <option value="ELF">空気抵抗付1次関数(未実装)</option>
+        </select>
+        <div id="mFormX"></div>
+        </p>
+        <p>Y: 
+        <select name = y_appr_method id="selectY" onchange="showFormY()">
+            <option value="CF">定数関数</option>
+            <option value="LF">1次関数</option>
+            <option value="QF">2次関数</option>
+            <option value="CosF">cos関数</option>
+            <option value="SinF">sin関数</option>
+            <option value="ELF">空気抵抗付1次関数(未実装)</option>
+        </select>
+        <div id="mFormY"></div>
+        </p><br>
+        <div>
+            <input type="submit" value="SUBMIT">
+        </div>
+    </form>
+    <p><a href="{{url_for('home')}}">BUCK TO HOME</a></p>
+</div>
+{% endblock %}
