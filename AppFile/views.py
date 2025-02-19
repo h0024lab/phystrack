@@ -147,5 +147,5 @@ def track_result():
 
     Formula, Path, CSV = defs.makeGraph(xm, ym, ss['t'], ss['x'], ss['y'], ss['ID'], ss['offset'], ss['rate']/1000.0)
     VP = ss['ID']+'_video.mp4'
-    return xm, msex
-    #return retmp(app.config['HTML_RE'], Formula=Formula, Path=Path, VPath=VP, CSV=CSV)
+    #return xm, msex
+    return retmp(app.config['HTML_RE'], Formula=Formula, Path=Path, VPath=VP, CSV=CSV)
